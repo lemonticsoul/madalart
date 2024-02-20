@@ -1,4 +1,7 @@
 package com.example.madalart.respository;
 
-public class MainRepository {
+import com.example.madalart.model.MainTopic;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MainRepository extends JpaRepository<MainTopic, Long> {
 }

@@ -38,6 +38,10 @@ public class MadalartService {
         MainTopicDto savedDto = new MainTopicDto();
         savedDto.setId(mainTopic.getId());
         savedDto.setTitle(mainTopic.getTitle());
+        List<DetailDto> detailDtos = mainTopic.getDetails().stream()
+                .map(this::convertDetailEntityToDto)
+                .collect(Collectors.toList());
+        savedDto.setDetails(detailDtos);
 
 
         return savedDto;
@@ -58,6 +62,11 @@ public class MadalartService {
         MainTopicDto mainTopicDto = new MainTopicDto();
         mainTopicDto.setId(mainTopic.getId());
         mainTopicDto.setTitle(mainTopic.getTitle());
+        List<DetailDto> detailDtos = mainTopic.getDetails().stream()
+                .map(this::convertDetailEntityToDto)
+                .collect(Collectors.toList());
+        mainTopicDto.setDetails(detailDtos);
+
 
         return mainTopicDto;
     }
@@ -90,8 +99,8 @@ public class MadalartService {
     private DetailDto convertDetailEntityToDto(Detail detail) {
         DetailDto detailDto = new DetailDto();
         detailDto.setId(detail.getId());
-        detailDto.setTitle(detail.getTitle());
-        detailDto.setmainTopicId(detail.getmainTopicId());
+        detailDto.setContent(detail.getContent());
+
 
         return detailDto;
     }
@@ -102,16 +111,14 @@ public class MadalartService {
 
         Detail detail = new Detail();
         detail.setContent(detailDto.getContent());
-        detail.setMainTopicId(detailDto.getMainTopicId());
 
 
         detail = detailRepository.save(detail);
 
-        
+
         DetailDto savedDetailDto = new DetailDto();
         savedDetailDto.setId(detail.getId());
-        savedDetailDto.setContent(detail.getcontent());
-        savedDetailDto.setMainTopicId(detail.getmainTopicId());
+        savedDetailDto.setContent(detail.getContent());
 
 
         return savedDetailDto;
