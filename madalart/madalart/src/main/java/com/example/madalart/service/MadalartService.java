@@ -6,6 +6,7 @@ import com.example.madalart.model.Detail;
 import com.example.madalart.model.MainTopic;
 import com.example.madalart.respository.DetailRepository;
 import com.example.madalart.respository.MainRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MadalartService {
 
     private final MainRepository mainRepository;
@@ -25,27 +27,36 @@ public class MadalartService {
         this.detailRepository = detailRepository;
     }
 
+    @Transactional
     public MainTopicDto saveMainTopics(MainTopicDto mainTopicDto) {
 
         MainTopic mainTopic = new MainTopic();
         mainTopic.setTitle(mainTopicDto.getTitle());
 
 
+        MainTopic savedMainTopic = mainRepository.save(mainTopic);
 
-        mainTopic = mainRepository.save(mainTopic);
-
+        System.out.println(savedMainTopic.getTitle());
 
         MainTopicDto savedDto = new MainTopicDto();
-        savedDto.setId(mainTopic.getId());
-        savedDto.setTitle(mainTopic.getTitle());
-        List<DetailDto> detailDtos = mainTopic.getDetails().stream()
+
+        savedDto.setId(savedMainTopic.getId());
+        savedDto.setTitle(savedMainTopic.getTitle());
+
+
+        List<DetailDto> detailDtos = savedMainTopic.getDetails().stream()
                 .map(this::convertDetailEntityToDto)
                 .collect(Collectors.toList());
         savedDto.setDetails(detailDtos);
 
 
+        System.out.println(savedDto.getId());
+        System.out.println(savedDto.getTitle());
+
+
         return savedDto;
     }
+
 
     public List<MainTopicDto> getAllMainTopics(){
         List<MainTopic> mainTopics = mainRepository.findAll();
@@ -100,9 +111,11 @@ public class MadalartService {
         DetailDto detailDto = new DetailDto();
         detailDto.setId(detail.getId());
         detailDto.setContent(detail.getContent());
-
-
+        detailDto.setMainTopicId(detail.getMainTopic().getId());
+        detailDto.setMainTopicTitle(detail.getMainTopic().getTitle());
         return detailDto;
+
+
     }
 
 
@@ -119,6 +132,8 @@ public class MadalartService {
         DetailDto savedDetailDto = new DetailDto();
         savedDetailDto.setId(detail.getId());
         savedDetailDto.setContent(detail.getContent());
+        detailDto.setMainTopicId(detail.getMainTopic().getId());
+        detailDto.setMainTopicTitle(detail.getMainTopic().getTitle());
 
 
         return savedDetailDto;

@@ -9,5 +9,6 @@ import lombok.Setter;
 public class DetailDto {
     private Long id;
     private String content;
-
+    private Long mainTopicId;
+    private String mainTopicTitle;
 }
